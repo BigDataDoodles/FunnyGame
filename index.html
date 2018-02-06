@@ -46,12 +46,12 @@
             var y = HEIGHT / 2 - player.y;
             ctx.drawImage(Img.map,
                 0, 0, self.image.width, self.image.height,
-                x, y, self.image.width * 2, self.image.height * 2);
+                x, y, self.image.width, self.image.height);
         };
         return self;
     }
 
-    currentMap = Maps("newMap", "img/map.jpg", 1024, 512);
+    currentMap = Maps("newMap", "img/map.jpg", 800, 600);
 
     update = function () {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);

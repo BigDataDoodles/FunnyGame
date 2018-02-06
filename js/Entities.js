@@ -41,8 +41,8 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
     self.updatePosition = function () {
         self.x += self.spdX;
         self.y += self.spdY;
-        if (self.x < self.width / 2 || self.x > (WIDTH - self.width / 2)) self.spdX = -self.spdX;
-        if (self.y < self.height / 2 || self.y > (HEIGHT - self.height / 2)) self.spdY = -self.spdY;
+        if (self.x < self.width / 2 || self.x > (currentMap.width - self.width / 2)) self.spdX = -self.spdX;
+        if (self.y < self.height / 2 || self.y > (currentMap.height - self.height / 2)) self.spdY = -self.spdY;
     };
     self.getDistance = function (entity2) {
         var vx = self.x - entity2.x;
@@ -98,12 +98,12 @@ Player = function () {
 
         if (self.x < self.width / 2)
             self.x = self.width / 2;
-        if (self.x > WIDTH - self.width / 2)
-            self.x = WIDTH - self.width / 2;
+        if (self.x > currentMap.width - self.width / 2)
+            self.x = currentMap.width - self.width / 2;
         if (self.y < self.height / 2)
             self.y = self.height / 2;
-        if (self.y > HEIGHT - self.height / 2)
-            self.y = HEIGHT - self.height / 2;
+        if (self.y > currentMap.height - self.height / 2)
+            self.y = currentMap.height - self.height / 2;
     };
     self.isPressedLeft = false;
     self.isPressedRight = false;
@@ -195,9 +195,9 @@ Bullet = function (id, x, y, spdX, spdY, width, height) {
     var self = Entity('bullet', id, x, y, spdX, spdY, width, height, Img.bullet);
     self.isDestroy = function () {
         return self.x < self.width / 2
-            || self.x > WIDTH - self.width / 2
+            || self.x > currentMap.width - self.width / 2
             || self.y < self.height / 2
-            || self.y > HEIGHT - self.width / 2;
+            || self.y > currentMap.height - self.width / 2;
     };
     var super_update = self.update;
     self.update = function () {
@@ -233,8 +233,8 @@ generateRandomBot = function () {
     var spdY = 1 + Math.random() * 5;
     var width = 20 + Math.random() * 20;
     var height = width;
-    var x = (width / 2) + Math.random() * (WIDTH - width / 2);
-    var y = (height / 2) + Math.random() * (HEIGHT - height / 2);
+    var x = Math.random() * currentMap.width;
+    var y = Math.random() * currentMap.height;
     var name = Math.random();
     Bot(name, x, y, spdX, spdY, width, height);
 };
@@ -244,8 +244,8 @@ generateRandomUpdate = function () {
     var spdY = 0;
     var width = 20;
     var height = 20;
-    var x = (width / 2) + Math.random() * (WIDTH - width / 2);
-    var y = (height / 2) + Math.random() * (HEIGHT - height / 2);
+    var x = Math.random() * currentMap.width;
+    var y = Math.random() * currentMap.height;
     var id = Math.random();
     var bonus = null;
     var img = null;
