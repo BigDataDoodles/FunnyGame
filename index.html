@@ -1,0 +1,140 @@
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<script src="js/Entities.js"></script>
+<script type="text/javascript">
+
+    var ctx = document.getElementById('ctx').getContext("2d");
+
+    //1. Modify Settings
+
+    ctx.font = '24px Arial';    // Font
+    ctx.fillStyle = 'blue';  // Color
+    ctx.globalAlpha = 1;  //Transparency
+
+    //Parameters
+
+    var WIDTH = 500;
+    var HEIGHT = 500;
+    var frameCount = 0;
+    var score = 0;
+
+    //Images
+
+    var Img = {};
+    Img.player = new Image();
+    Img.player.src = "img/ass.png";
+    Img.bot = new Image();
+    Img.bot.src = "img/banana.png";
+    Img.bullet = new Image();
+    Img.bullet.src = "img/poop.png";
+    Img.upgrade1 = new Image();
+    Img.upgrade1.src = "img/cookie.png";
+    Img.upgrade2 = new Image();
+    Img.upgrade2.src = "img/donut.png";
+    Img.map = new Image();
+    Img.map.src = "img/map.jpg";
+
+    Maps = function (id, imgSrc, width, height) {
+        var self = {
+            id: id,
+            image: new Image(),
+            width: width,
+            height: height
+        }
+        self.image.src = imgSrc;
+        self.draw = function () {
+            var x = WIDTH / 2 - player.x;
+            var y = HEIGHT / 2 - player.y;
+            ctx.drawImage(Img.map,
+                0, 0, self.image.width, self.image.height,
+                x, y, self.image.width * 2, self.image.height * 2);
+        };
+        return self;
+    }
+
+    currentMap = Maps("newMap", "img/map.jpg", 1024, 512);
+
+    update = function () {
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+        currentMap.draw();
+
+        if (player.hp === 0) startNewGame();
+
+        frameCount++;
+        score++;
+
+        if (frameCount % 120 === 0) generateRandomBot();
+
+        if (frameCount % 80 === 0) generateRandomUpdate();
+
+        player.update();
+
+        for (var key in bullets) {
+            bullets[key].update();
+        }
+
+        for (var key in updates) {
+            updates[key].update();
+        }
+
+        for (var key in bots) {
+            bots[key].update();
+        }
+
+        ctx.fillText("HP: " + player.hp, 0, 30);
+        ctx.fillText("Score: " + score, 200, 30);
+    };
+
+    //3. Events
+
+    document.onmousemove = function (mouse) {
+
+        var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left; // document.getElementById('ctx').getBoundingClientRect() - фиксит проблему с рамками canvas
+        var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+
+        mouseX -= player.x;
+        mouseY -= player.y;
+
+        player.aimAngle = Math.atan2(mouseY, mouseX) / Math.PI * 180;
+
+    };
+
+    document.onclick = function (ev) {
+        player.simpleAttack();
+    }
+
+    document.oncontextmenu = function (ev) {
+        player.extraAttack();
+        ev.preventDefault();
+    }
+
+    // Player keyboard control
+    document.onkeydown = function (event) {
+        var code = event.keyCode;
+        if (code === 87) // w
+            player.isPressedUp = true;
+        if (code === 65) // a
+            player.isPressedLeft = true;
+        if (code === 83) // s
+            player.isPressedDown = true;
+        if (code === 68) // d
+            player.isPressedRight = true;
+    }
+
+    document.onkeyup = function (event) {
+        var code = event.keyCode;
+        if (code === 87) // w
+            player.isPressedUp = false;
+        if (code === 65) // a
+            player.isPressedLeft = false;
+        if (code === 83) // s
+            player.isPressedDown = false;
+        if (code === 68) // d
+            player.isPressedRight = false;
+    }
+
+    //4. Main
+
+    startNewGame();
+    setInterval(update, 25); // Reuse function every n milliseconds
+
+</script>
